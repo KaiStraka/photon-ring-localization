@@ -52,8 +52,9 @@ def val_loop():
 
     val_loss /= len(val_loader)
     val_accuracy = val_correct / val_total
+    val_end_time = datetime.now()
 
-    return val_start_time, val_loss, val_accuracy, val_correct, val_total
+    return val_start_time, val_end_time, val_loss, val_accuracy, val_correct, val_total
 
 
 def test_loop():
@@ -79,22 +80,23 @@ def test_loop():
 
     test_loss /= len(test_loader)
     test_accuracy = test_correct / test_total
+    test_end_time = datetime.now()
 
-    return test_start_time, test_loss, test_accuracy, test_correct, test_total
+    return test_start_time, test_end_time, test_loss, test_accuracy, test_correct, test_total
 
 
-def finished_info(name, x_start_time, x_loss, x_accuracy, x_correct, x_total):
+def finished_info(name, x_start_time, x_end_time, x_loss, x_accuracy, x_correct, x_total):
 
     print(f"{name} complete.")
     print("start time: ", x_start_time)
-    print("finish time: ", datetime.now())
+    print("finish time: ", x_end_time)
     print(f"loss: {x_loss:.4f}")
     print(f"accuracy: {x_accuracy:.4f}")
     print(f"correct: {x_correct} / {x_total}")
 
 
-val_start_time, val_loss, val_accuracy, val_correct, val_total = val_loop()
-test_start_time, test_loss, test_accuracy, test_correct, test_total = test_loop()
+val_start_time, val_end_time, val_loss, val_accuracy, val_correct, val_total = val_loop()
+test_start_time, test_end_time, test_loss, test_accuracy, test_correct, test_total = test_loop()
 
-finished_info("validation", val_start_time, val_loss, val_accuracy, val_correct, val_total)
-finished_info("test", test_start_time, test_loss, test_accuracy, test_correct, test_total)
+finished_info("validation", val_start_time, val_end_time, val_loss, val_accuracy, val_correct, val_total)
+finished_info("test", test_start_time, test_end_time, test_loss, test_accuracy, test_correct, test_total)
