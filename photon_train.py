@@ -10,25 +10,24 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from datetime import datetime
 
-train_data = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train"
-image_paths = glob.glob(os.path.join(train_data, "*.npz"))
 
+train_data = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train"        # load training data
+image_paths = glob.glob(os.path.join(train_data, "*.npz"))
 train_dataset = photonDataset(image_paths)
 train_loader = DataLoader(train_dataset, batch_size = 16, shuffle = True)
 
-model = photonUNET()
+model = photonUNET()        # load model
 
-criterion = nn.BCEWithLogitsLoss()
+criterion = nn.BCEWithLogitsLoss()      # loss function                     
 optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
-
-start_time = datetime.now()
 
 epochs = 5     # number of cycles
 
-for epoch in range(epochs):
+for epoch in range(epochs):     # training loop
 
-    model.train()
+    model.train()       # set model to training mode
     training_loss = 0.0
+    start_time = datetime.now()
 
     for degraded, mask in train_loader:
 
@@ -44,7 +43,7 @@ for epoch in range(epochs):
     training_loss /= len(train_loader)
     print(f"Epoch {epoch + 1}: " f"Loss = {training_loss:.4}")
 
-torch.save(model.state_dict(), "photon_model.pth")
+torch.save(model.state_dict(), "photon_model.pth")      # store trained model
 print("training complete.")
-print("start time: ", start_time)
-print("finish time: ", datetime.now())
+print(f"start time: {start_time}")
+print(f"finish time: {datetime.now()}")
