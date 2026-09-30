@@ -29,7 +29,7 @@ criterion = nn.BCEWithLogitsLoss()      # loss function
 model.eval()        # set model to evaluation mode
 
 
-def val_loop():     # validation loop
+def val_loop():     # validation function
 
     val_loss = 0.0
     val_correct = 0
@@ -38,16 +38,16 @@ def val_loop():     # validation loop
 
     with torch.no_grad():       # validation
 
-        for degraded, mask in val_loader:
+        for degraded, mask in val_loader:       # validation loop
 
             prediction = model(degraded)        # predict photon ring mask
             loss = criterion(prediction, mask)
             val_loss += loss.item()
 
-            probability = torch.sigmoid(prediction)     # convert logit to percentages
+            probability = torch.sigmoid(prediction)             # convert logit to percentages
             predicted_mask = (probability >= 0.5).float()       # 0.5 since mask pixels are binary
             val_correct += (predicted_mask == mask).sum().item()
-            val_total += mask.numel()
+            val_total += mask.numel()           # num of elements
             print(".")
 
     val_loss /= len(val_loader)
@@ -57,16 +57,16 @@ def val_loop():     # validation loop
     return val_start_time, val_end_time, val_loss, val_accuracy, val_correct, val_total
 
 
-def test_loop():    # testing loop
+def test_loop():    # testing function
 
     test_loss = 0.0
     test_correct = 0
     test_total = 0
     test_start_time = datetime.now()
 
-    with torch.no_grad():       # testing
+    with torch.no_grad():
 
-        for degraded, mask in test_loader:
+        for degraded, mask in test_loader:      # testing loop
 
             prediction = model(degraded)        # predict photon ring mask
             loss = criterion(prediction, mask)
@@ -75,7 +75,7 @@ def test_loop():    # testing loop
             probability = torch.sigmoid(prediction)             # convert logit to percentages
             predicted_mask = (probability >= 0.5).float()       # 0.5 since mask pixels are binary
             test_correct += (predicted_mask == mask).sum().item()
-            test_total += mask.numel()
+            test_total += mask.numel()          # num of elements
             print(".")
 
     test_loss /= len(test_loader)
