@@ -20,14 +20,14 @@ model = photonUNET()        # load model
 
 criterion = nn.BCEWithLogitsLoss()      # loss function                     
 optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
+start_time = datetime.now()
 
-epochs = 5     # number of cycles
+epochs = 20     # number of cycles
 
 for epoch in range(epochs):     # training loop
 
     model.train()       # set model to training mode
     training_loss = 0.0
-    start_time = datetime.now()
 
     for degraded, mask in train_loader:
 
