@@ -58,4 +58,5 @@ def display_img(clean, clean_mask, degraded, degraded_mask, cmap):
     plt.tight_layout()
     plt.show()
 
+
 display_img(img_clean, mask_clean, img_degraded, predicted_mask, "gray")
