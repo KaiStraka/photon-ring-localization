@@ -112,8 +112,8 @@ def test_loop():    # testing function
 def calc_overlap(predicted, target):     # jaccard index overlap model
 
     predicted = torch.sigmoid(predicted)            # sigmoid since binary
-    predicted = (predicted > 0.5).float()     # get bright pixels only (binary)
-    target = (target > 0.5).float()                 # ensure target is binary
+    predicted = (predicted >= 0.5).float()     # get bright pixels only (binary)
+    target = (target >= 0.5).float()                 # ensure target is binary
 
     intersection = (predicted * target).sum(dim = (1, 2, 3))
     union = ((predicted + target) > 0).float().sum(dim = (1, 2, 3))
@@ -130,13 +130,13 @@ def finished_info(name, x_start_time, x_end_time, x_loss, x_accuracy, x_correct,
     print("start time: ", x_start_time)
     print("finish time: ", x_end_time)
     print(f"loss: {x_loss:.4f}")
-    print(f"accuracy: {x_accuracy:.4f}")
-    print(f"correct: {x_correct} / {x_total}")
-    print(f"overlap: {x_overlap:.4f}")
+    print(f"pixel accuracy: {x_accuracy:.4f}")
+    print(f"correct pixels: {x_correct} / {x_total}")
+    print(f"overlap: {x_overlap:.4f}\n")
 
 
 val_start_time, val_end_time, val_loss, val_accuracy, val_correct, val_total, val_overlap = val_loop()               # run validation loop
 test_start_time, test_end_time, test_loss, test_accuracy, test_correct, test_total, test_overlap = test_loop()        # run testing loop
 
 finished_info("validation", val_start_time, val_end_time, val_loss, val_accuracy, val_correct, val_total, val_overlap)       # print validation info
-finished_info("test", test_start_time, test_end_time, test_loss, test_accuracy, test_correct, test_total, test_overlap)       # print testing info
+finished_info("testing", test_start_time, test_end_time, test_loss, test_accuracy, test_correct, test_total, test_overlap)       # print testing info
