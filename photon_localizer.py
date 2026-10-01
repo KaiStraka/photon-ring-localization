@@ -26,7 +26,7 @@ with torch.no_grad():       # predict degraded mask
 
     prediction = model(degraded_tensor.unsqueeze(0))
     probability = torch.sigmoid(prediction)
-    predicted_mask = (probability >= 0.5).float()
+    predicted_mask = (probability >= 0.35).float()
 
 predicted_mask = predicted_mask.squeeze().cpu().numpy()     # convert tensor for plot
 
@@ -53,7 +53,7 @@ def display_img(clean, clean_mask, degraded, degraded_mask, cmap):
     plt.subplot(1, 4, 4)        # degraded mask
     plt.imshow(degraded_mask, origin = "lower", cmap = cmap)
     plt.colorbar(label = "")
-    plt.title("Degraded Mask")
+    plt.title("Predicted Mask")
 
     plt.tight_layout()
     plt.show()

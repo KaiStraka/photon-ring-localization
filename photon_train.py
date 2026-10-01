@@ -22,7 +22,7 @@ criterion = nn.BCEWithLogitsLoss()      # loss function
 optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
 start_time = datetime.now()
 
-epochs = 20     # number of cycles
+epochs = 50     # number of cycles
 
 for epoch in range(epochs):     # training loop
 
