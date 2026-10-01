@@ -10,7 +10,7 @@ import photonDegrade
 import photonImage
 
 
-image = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\localize\fnyeshmlmf.npz"       # image path
+image = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\localize\zj74lfymz0.npz"       # image path
 
 model = photonUNET()        # load model
 model.load_state_dict(torch.load("photon_model.pth"))       # load trained model
@@ -24,9 +24,10 @@ degraded_tensor = photonImage.pixel_tensor(img_degraded)
 
 with torch.no_grad():       # predict degraded mask
 
+    threshold = np.percentile(degraded_tensor, 95.0)        # nth percentile of bright pixels
     prediction = model(degraded_tensor.unsqueeze(0))
     probability = torch.sigmoid(prediction)
-    predicted_mask = (probability >= 0.35).float()
+    predicted_mask = (probability >= threshold).float()
 
 predicted_mask = predicted_mask.squeeze().cpu().numpy()     # convert tensor for plot
 
