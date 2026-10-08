@@ -3,6 +3,7 @@
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+from scipy.ndimage import binary_closing, gaussian_filter
 
 
 def pixel_list(image):          # generate pixel list | use to load image
@@ -24,42 +25,49 @@ def pixel_tensor(image):        # generate pixel tensor
 
 def ring_mask(pixels):      # segmented percentile
 
-    percentile = 99.5               # nth percentile pixels
-    mask = np.zeros_like(pixels)
+    percentile = 99.4                   # nth percentile pixels
+    mask = np.zeros_like(pixels, dtype = bool)
 
     height, width = pixels.shape
 
     mid_y = height // 2
     mid_x = width // 2
 
-    block = pixels[:mid_y, :mid_x]      # top left quadrant
-    mask[:mid_y, :mid_x] = block >= np.percentile(block, percentile)
+    thresholds = np.array([                                         # quadrant thresholds for local percentiles
+        [np.percentile(pixels[:mid_y, :mid_x], percentile),         # top left quadrant
+         np.percentile(pixels[:mid_y, mid_x:], percentile)],        # top right quadrant
+        [np.percentile(pixels[mid_y:, :mid_x], percentile),         # bottom left quadrant
+         np.percentile(pixels[mid_y:, mid_x:], percentile)]])       # bottom right quadrant
 
-    block = pixels[:mid_y, mid_x:]      # top right quadrant
-    mask[:mid_y, mid_x:] = block >= np.percentile(block, percentile)
+    threshold_map = np.empty((height, width), dtype = float)
 
-    block = pixels[mid_y:, :mid_x]      # bottom left quadrant
-    mask[mid_y:, :mid_x] = block >= np.percentile(block, percentile)
+    threshold_map[:mid_y, :mid_x] = thresholds[0, 0]        # fill top left quad
+    threshold_map[:mid_y, mid_x:] = thresholds[0, 1]        # fill top right quad
+    threshold_map[mid_y:, :mid_x] = thresholds[1, 0]        # fill bottom left quad
+    threshold_map[mid_y:, mid_x:] = thresholds[1, 1]        # fill bottom right quad
 
-    block = pixels[mid_y:, mid_x:]      # bottom right quadrant
-    mask[mid_y:, mid_x:] = block >= np.percentile(block, percentile)
+    threshold_map = gaussian_filter(threshold_map, sigma = 10.0, mode = "nearest")      # apply gaussian to thresholds
+    mask = pixels >= threshold_map                                                      # apply threshold map to mask
+
+    mask = binary_closing(mask, structure = np.ones((5, 5)))        # fill small gaps at borders
+    mask = np.where(mask, pixels, 0.0)                              # preserve differences in brightness
 
     return mask
 
 
-def display_img():      # plot images | internal testing only
+def display_img(cmap):      # plot images | internal testing only
 
-    image_path = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train\00d2u2jywh.npz"
+    image_path = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train\0jcnhtdsm2.npz"
 
     plt.figure(figsize=(8, 4))
 
     plt.subplot(1, 2, 1)
-    plt.imshow(pixel_list(image_path), origin = "lower", cmap = "gray")
+    plt.imshow(pixel_list(image_path), origin = "lower", cmap = cmap)
     plt.colorbar(label = "Intensity")
     plt.title("Clean Image")
 
     plt.subplot(1, 2, 2)
-    plt.imshow(ring_mask(pixel_list(image_path)), origin = "lower", cmap = "gray")
+    plt.imshow(ring_mask(pixel_list(image_path)), origin = "lower", cmap = cmap)
     plt.colorbar(label = "")
     plt.title("Clean Mask")
 
@@ -67,4 +75,4 @@ def display_img():      # plot images | internal testing only
     plt.show()
 
 
-display_img()
+# display_img("afmhot")   # also "gray"
