@@ -22,33 +22,49 @@ def pixel_tensor(image):        # generate pixel tensor
     return pixels
 
 
-def ring_mask(pixels):       # generate ring mask
+def ring_mask(pixels):      # segmented percentile
 
-    threshold = np.percentile(pixels, 99.4)      # find nth percentile brightest pixels
-    mask = np.zeros_like(pixels, dtype = np.float32)
-    mask[pixels >= threshold] = 1.0
+    percentile = 99.5               # nth percentile pixels
+    mask = np.zeros_like(pixels)
+
+    height, width = pixels.shape
+
+    mid_y = height // 2
+    mid_x = width // 2
+
+    block = pixels[:mid_y, :mid_x]      # top left quadrant
+    mask[:mid_y, :mid_x] = block >= np.percentile(block, percentile)
+
+    block = pixels[:mid_y, mid_x:]      # top right quadrant
+    mask[:mid_y, mid_x:] = block >= np.percentile(block, percentile)
+
+    block = pixels[mid_y:, :mid_x]      # bottom left quadrant
+    mask[mid_y:, :mid_x] = block >= np.percentile(block, percentile)
+
+    block = pixels[mid_y:, mid_x:]      # bottom right quadrant
+    mask[mid_y:, mid_x:] = block >= np.percentile(block, percentile)
 
     return mask
 
 
 def display_img():      # plot images | internal testing only
 
-    image_path = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train\0b4wnw3wlz.npz"
+    image_path = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train\00d2u2jywh.npz"
 
     plt.figure(figsize=(8, 4))
 
     plt.subplot(1, 2, 1)
     plt.imshow(pixel_list(image_path), origin = "lower", cmap = "gray")
     plt.colorbar(label = "Intensity")
-    plt.title("Image")
+    plt.title("Clean Image")
 
     plt.subplot(1, 2, 2)
     plt.imshow(ring_mask(pixel_list(image_path)), origin = "lower", cmap = "gray")
     plt.colorbar(label = "")
-    plt.title("Ring Mask")
+    plt.title("Clean Mask")
 
     plt.tight_layout()
     plt.show()
 
 
-# display_img()
+display_img()
