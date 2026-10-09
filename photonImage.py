@@ -23,9 +23,9 @@ def pixel_tensor(image):        # generate pixel tensor
     return pixels
 
 
-def ring_mask(pixels):      # segmented percentile
+def ring_mask(pixels):      # segmented ring mask
 
-    percentile = 99.4                   # nth percentile pixels
+    percentile = 99.3                   # nth percentile pixels
     mask = np.zeros_like(pixels, dtype = bool)
 
     height, width = pixels.shape
@@ -33,7 +33,7 @@ def ring_mask(pixels):      # segmented percentile
     mid_y = height // 2
     mid_x = width // 2
 
-    thresholds = np.array([                                         # quadrant thresholds for local percentiles
+    thresholds = np.array([                                     # quadrant thresholds for local percentiles
         [np.percentile(pixels[:mid_y, :mid_x], percentile),         # top left quadrant
          np.percentile(pixels[:mid_y, mid_x:], percentile)],        # top right quadrant
         [np.percentile(pixels[mid_y:, :mid_x], percentile),         # bottom left quadrant
@@ -41,10 +41,10 @@ def ring_mask(pixels):      # segmented percentile
 
     threshold_map = np.empty((height, width), dtype = float)
 
-    threshold_map[:mid_y, :mid_x] = thresholds[0, 0]        # fill top left quad
-    threshold_map[:mid_y, mid_x:] = thresholds[0, 1]        # fill top right quad
-    threshold_map[mid_y:, :mid_x] = thresholds[1, 0]        # fill bottom left quad
-    threshold_map[mid_y:, mid_x:] = thresholds[1, 1]        # fill bottom right quad
+    threshold_map[:mid_y, :mid_x] = thresholds[0, 0]        # fill top left quadrant
+    threshold_map[:mid_y, mid_x:] = thresholds[0, 1]        # fill top right quadrant
+    threshold_map[mid_y:, :mid_x] = thresholds[1, 0]        # fill bottom left quadrant
+    threshold_map[mid_y:, mid_x:] = thresholds[1, 1]        # fill bottom right quadrant
 
     threshold_map = gaussian_filter(threshold_map, sigma = 10.0, mode = "nearest")      # apply gaussian to thresholds
     mask = pixels >= threshold_map                                                      # apply threshold map to mask
@@ -57,7 +57,7 @@ def ring_mask(pixels):      # segmented percentile
 
 def display_img(cmap):      # plot images | internal testing only
 
-    image_path = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train\0jcnhtdsm2.npz"
+    image_path = r"C:\Users\Kai\Desktop\astroAI\blackholeML\model\train\0g1pf4ckbx.npz"
 
     plt.figure(figsize=(8, 4))
 
@@ -75,4 +75,4 @@ def display_img(cmap):      # plot images | internal testing only
     plt.show()
 
 
-# display_img("afmhot")   # also "gray"
+# display_img("afmhot")   # also "gray" , "afmhot"
