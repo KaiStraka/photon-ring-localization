@@ -68,7 +68,7 @@ def display_img(cmap):      # plot images | internal testing only
 
     plt.subplot(1, 2, 2)
     plt.imshow(ring_mask(pixel_list(image_path)), origin = "lower", cmap = cmap)
-    plt.colorbar(label = "")
+    plt.colorbar(label = "Intensity")
     plt.title("Clean Mask")
 
     plt.tight_layout()

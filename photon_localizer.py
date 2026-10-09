@@ -24,12 +24,12 @@ degraded_tensor = photonImage.pixel_tensor(img_degraded)
 
 with torch.no_grad():       # predict degraded mask
 
-    threshold = np.percentile(degraded_tensor, 95.0)        # nth percentile of bright pixels
     prediction = model(degraded_tensor.unsqueeze(0))
     probability = torch.sigmoid(prediction)
-    predicted_mask = (probability >= threshold).float()
 
-predicted_mask = predicted_mask.squeeze().cpu().numpy()     # convert tensor for plot
+probabilities_np = probability.squeeze().cpu().numpy()
+
+predicted_mask = photonImage.ring_mask(probabilities_np)
 
 
 def display_img(clean, clean_mask, degraded, degraded_mask, cmap):
@@ -43,21 +43,21 @@ def display_img(clean, clean_mask, degraded, degraded_mask, cmap):
 
     plt.subplot(1, 4, 2)        # clean mask
     plt.imshow(clean_mask, origin = "lower", cmap = cmap)
-    plt.colorbar(label = "")
+    plt.colorbar(label = "Intensity")
     plt.title("Clean Mask")
 
     plt.subplot(1, 4, 3)        # degraded image
     plt.imshow(degraded, origin = "lower", cmap = cmap)
-    plt.colorbar(label = "")
+    plt.colorbar(label = "Intensity")
     plt.title("Gauss + Scatter")
 
     plt.subplot(1, 4, 4)        # degraded mask
     plt.imshow(degraded_mask, origin = "lower", cmap = cmap)
-    plt.colorbar(label = "")
+    plt.colorbar(label = "Intensity")
     plt.title("Predicted Mask")
 
     plt.tight_layout()
     plt.show()
 
 
-display_img(img_clean, mask_clean, img_degraded, predicted_mask, "gray")
+display_img(img_clean, mask_clean, img_degraded, predicted_mask, "afmhot")
