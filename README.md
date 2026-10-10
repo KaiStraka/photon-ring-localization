@@ -57,7 +57,7 @@ The GRRT<sup>[3]</sup> dataset has 3 subsets; training, validation and testing. 
 
 <div align="center">
   <img width="1846" height="479" alt="github temp example4" src="https://github.com/user-attachments/assets/c693cedd-87bf-4b88-a13d-15019a2a762a" />
-  <p><em>Figure 5: Full prediction example 2 (mask is outdated)</em></p>
+  <p><em>Figure 5: Full prediction example 2</em></p>
 </div>
 
 Future work includes optimization of predicted ring masks, implementation of the segmented percentile ring mask algorithm mentioned, gradient ring mask predictions instead of binary masks, predictions of n = 0, 1, 2 photon ring layers and potential parameter extraction such as black hole spin, radius, etc., among other things. Of course applications of this method on real life observed black hole images is expected in the future.
