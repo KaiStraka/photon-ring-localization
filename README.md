@@ -56,7 +56,7 @@ The ring mask prediction works using the following logic: clean simulated image 
 The GRRT<sup>[3]</sup> dataset has 3 subsets; training, validation and testing. Initial training at 20 epochs yields a ~50% prediction-truth overlap and generates near-acceptable masks. This metric is not comparable to an accuracy reading, as we are measuring binary pixel values and not a pixel gradient. Although that is the goal. Below in Fig. 5 is another example of a prediction using the 20 epoch model and logic described above.
 
 <div align="center">
-  <img width="1846" height="479" alt="github temp example4" src="https://github.com/user-attachments/assets/c693cedd-87bf-4b88-a13d-15019a2a762a" />
+  <img width="1500" height="400" alt="github temp example4" src="https://github.com/user-attachments/assets/440c08b1-ff8a-41ab-aee9-8da6695cf528" />  
   <p><em>Figure 5: Full prediction example 2</em></p>
 </div>
 
